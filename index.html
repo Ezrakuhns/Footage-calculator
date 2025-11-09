@@ -8,22 +8,24 @@
 <style>
     :root {
         --bg-color: #121212;
-        --card-bg: #1e1e1e;
+        --card-bg: rgba(30, 30, 30, 0.75);
         --text-color: #f5f5f5;
         --accent: #4caf50;
         --muted: #aaa;
-        --highlight-bg: #263238;
+        --highlight-bg: rgba(38, 50, 56, 0.7);
         --note-color: #ccc;
+        --blur: 10px;
     }
 
     body.light-mode {
         --bg-color: #f4f4f4;
-        --card-bg: #ffffff;
+        --card-bg: rgba(255, 255, 255, 0.8);
         --text-color: #222;
         --accent: #2e7d32;
         --muted: #555;
-        --highlight-bg: #e2f0d9;
+        --highlight-bg: rgba(226, 240, 217, 0.8);
         --note-color: #555;
+        --blur: 6px;
     }
 
     body {
@@ -33,6 +35,11 @@
         padding: 25px;
         transition: all 0.3s ease;
         min-height: 100vh;
+        background-image: radial-gradient(circle at top left, #1a1a1a, #0d0d0d);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
     h2 {
@@ -55,6 +62,7 @@
         cursor: pointer;
         transition: background 0.3s, color 0.3s, border 0.3s;
         z-index: 10;
+        backdrop-filter: blur(var(--blur));
     }
     .theme-toggle:hover {
         background: var(--accent);
@@ -64,11 +72,11 @@
 
     .calculator {
         background: var(--card-bg);
+        backdrop-filter: blur(var(--blur));
         padding: 20px 25px;
         max-width: 430px;
-        margin: 55px auto 0;
-        border-radius: 12px;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        border-radius: 15px;
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
     }
 
     label {
@@ -92,13 +100,13 @@
         font-size: 16px;
         border: 1px solid #333;
         border-radius: 5px;
-        background: #2a2a2a;
+        background: rgba(42, 42, 42, 0.8);
         color: var(--text-color);
         transition: border 0.2s, background 0.2s;
     }
 
     body.light-mode input {
-        background: #fff;
+        background: rgba(255, 255, 255, 0.9);
         border-color: #ccc;
         color: #222;
     }
@@ -106,7 +114,7 @@
     input:focus {
         outline: none;
         border-color: var(--accent);
-        background: #333;
+        background: rgba(60, 60, 60, 0.9);
     }
     body.light-mode input:focus {
         background: #f0f0f0;
@@ -119,13 +127,13 @@
         width: 100%;
         border-radius: 5px;
         border: 1px solid #333;
-        background: #2a2a2a;
+        background: rgba(42, 42, 42, 0.8);
         color: var(--text-color);
         transition: border 0.2s, background 0.2s;
     }
 
     body.light-mode select {
-        background: #fff;
+        background: rgba(255, 255, 255, 0.9);
         border-color: #ccc;
         color: #222;
     }
@@ -133,17 +141,14 @@
     select:focus {
         outline: none;
         border-color: var(--accent);
-        background: #333;
-    }
-    body.light-mode select:focus {
-        background: #f0f0f0;
+        background: rgba(60, 60, 60, 0.9);
     }
 
     .result {
         margin-top: 22px;
         padding: 14px;
         background: var(--highlight-bg);
-        border-radius: 8px;
+        border-radius: 10px;
         text-align: center;
         box-shadow: 0 0 10px rgba(0,0,0,0.4);
     }
@@ -166,23 +171,20 @@
         color: var(--note-color);
     }
 
-    /* ✅ Slim, Centered Mobile Layout */
+    /* ✅ Compact Mobile Layout */
     @media (max-width: 600px) {
         body {
             padding: 0;
-            display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
         }
         h2 {
             font-size: 20px;
-            margin: 10px 0;
+            margin-bottom: 12px;
         }
         .calculator {
             padding: 14px 16px;
             width: 92%;
-            margin: 0 auto;
         }
         label {
             margin-top: 10px;
@@ -302,10 +304,25 @@ function calculate() {
     document.getElementById('cabinPrice').textContent = `$${cabinPrice}`;
 }
 
-document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', calculate));
+// Input logic + zoom reset
+document.querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('input', calculate);
+});
+
 document.querySelectorAll('input[type="number"]').forEach(input => {
-    input.addEventListener('focus', () => { if (input.value === "0") input.value = ""; });
-    input.addEventListener('blur', () => { if (input.value === "") input.value = "0"; calculate(); });
+    input.addEventListener('focus', () => {
+        if (input.value === "0") input.value = "";
+    });
+    input.addEventListener('blur', () => {
+        if (input.value === "") input.value = "0";
+        calculate();
+
+        // ✅ Reset zoom to default (for mobile Safari/Chrome)
+        setTimeout(() => {
+            document.body.scrollIntoView({ behavior: "smooth", block: "center" });
+            document.activeElement.blur();
+        }, 150);
+    });
 });
 
 calculate();
