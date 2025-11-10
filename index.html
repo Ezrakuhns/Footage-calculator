@@ -4,251 +4,216 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Footage Calculator</title>
-
 <style>
-    :root {
-        --bg-color: #121212;
-        --card-bg: rgba(30, 30, 30, 0.75);
-        --text-color: #f5f5f5;
-        --accent: #4caf50;
-        --muted: #aaa;
-        --highlight-bg: rgba(38, 50, 56, 0.7);
-        --note-color: #ccc;
-        --blur: 10px;
-    }
+:root {
+    --bg-color: #121212;
+    --card-bg: rgba(30, 30, 30, 0.75);
+    --text-color: #f5f5f5;
+    --accent: #4caf50;
+    --muted: #aaa;
+    --highlight-bg: rgba(38, 50, 56, 0.7);
+    --note-color: #ccc;
+    --blur: 10px;
+}
 
-    body.light-mode {
-        --bg-color: #f4f4f4;
-        --card-bg: rgba(255, 255, 255, 0.8);
-        --text-color: #222;
-        --accent: #2e7d32;
-        --muted: #555;
-        --highlight-bg: rgba(226, 240, 217, 0.8);
-        --note-color: #555;
-        --blur: 6px;
-    }
+body.light-mode {
+    --bg-color: #f4f4f4;
+    --card-bg: rgba(255, 255, 255, 0.8);
+    --text-color: #222;
+    --accent: #2e7d32;
+    --muted: #555;
+    --highlight-bg: rgba(226, 240, 217, 0.8);
+    --note-color: #555;
+    --blur: 6px;
+}
 
-    body {
-        font-family: Arial, sans-serif;
-        background: var(--bg-color);
-        color: var(--text-color);
-        padding: 25px;
-        transition: all 0.3s ease;
-        min-height: 100vh;
-        background-image: radial-gradient(circle at top left, #1a1a1a, #0d0d0d);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
+body {
+    font-family: Arial, sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    padding: 25px;
+    min-height: 100vh;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-image: radial-gradient(circle at top left, #1a1a1a, #0d0d0d);
+}
 
-    h2 {
-        text-align: center;
-        color: var(--accent);
-        margin-bottom: 25px;
-    }
+h2 {
+    text-align: center;
+    color: var(--accent);
+    margin-bottom: 20px;
+}
 
-    /* 🌗 Theme Toggle Button */
-    .theme-toggle {
-        position: absolute;
-        top: 18px;
-        right: 18px;
-        background: var(--card-bg);
-        color: var(--text-color);
-        border: 1px solid var(--muted);
-        border-radius: 8px;
-        padding: 5px 10px;
-        font-size: 13px;
-        cursor: pointer;
-        transition: background 0.3s, color 0.3s, border 0.3s;
-        z-index: 10;
-        backdrop-filter: blur(var(--blur));
-    }
-    .theme-toggle:hover {
-        background: var(--accent);
-        color: #fff;
-        border-color: var(--accent);
-    }
+.top-buttons {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    gap: 6px;
+    z-index: 10;
+}
 
-    .calculator {
-        background: var(--card-bg);
-        backdrop-filter: blur(var(--blur));
-        padding: 20px 25px;
-        max-width: 430px;
-        border-radius: 15px;
-        box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
-    }
+.top-btn {
+    background: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--muted);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s, border 0.3s;
+    backdrop-filter: blur(var(--blur));
+}
+.top-btn:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
 
-    label {
-        display: block;
-        margin-top: 15px;
-        font-weight: bold;
-        color: var(--text-color);
-    }
+.tab-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
 
-    .input-group {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-top: 5px;
-    }
+.tab-buttons button {
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    border: 1px solid var(--muted);
+    background: var(--card-bg);
+    color: var(--text-color);
+    transition: background 0.3s, color 0.3s, border 0.3s;
+}
+.tab-buttons button.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
 
-    input {
-        width: 75px;
-        padding: 6px;
-        font-size: 16px;
-        border: 1px solid #333;
-        border-radius: 5px;
-        background: rgba(42, 42, 42, 0.8);
-        color: var(--text-color);
-        transition: border 0.2s, background 0.2s;
-    }
+.calculator {
+    background: var(--card-bg);
+    backdrop-filter: blur(var(--blur));
+    padding: 18px 20px;
+    max-width: 350px;
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+}
 
-    body.light-mode input {
-        background: rgba(255, 255, 255, 0.9);
-        border-color: #ccc;
-        color: #222;
-    }
+.calculator.active {
+    display: flex;
+}
 
-    input:focus {
-        outline: none;
-        border-color: var(--accent);
-        background: rgba(60, 60, 60, 0.9);
-    }
-    body.light-mode input:focus {
-        background: #f0f0f0;
-    }
+.input-row {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    gap: 8px;
+}
 
-    select {
-        margin-top: 10px;
-        padding: 8px;
-        font-size: 16px;
-        width: 100%;
-        border-radius: 5px;
-        border: 1px solid #333;
-        background: rgba(42, 42, 42, 0.8);
-        color: var(--text-color);
-        transition: border 0.2s, background 0.2s;
-    }
+label {
+    width: 100px;
+    font-weight: bold;
+    color: var(--text-color);
+}
 
-    body.light-mode select {
-        background: rgba(255, 255, 255, 0.9);
-        border-color: #ccc;
-        color: #222;
-    }
+input, select {
+    flex: 1;
+    padding: 5px;
+    font-size: 15px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    background: rgba(42, 42, 42, 0.8);
+    color: var(--text-color);
+    transition: border 0.2s, background 0.2s;
+}
 
-    select:focus {
-        outline: none;
-        border-color: var(--accent);
-        background: rgba(60, 60, 60, 0.9);
-    }
+body.light-mode input, body.light-mode select {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: #ccc;
+    color: #222;
+}
 
-    .result {
-        margin-top: 22px;
-        padding: 14px;
-        background: var(--highlight-bg);
-        border-radius: 10px;
-        text-align: center;
-        box-shadow: 0 0 10px rgba(0,0,0,0.4);
-    }
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(60, 60, 60, 0.9);
+}
+body.light-mode input:focus, body.light-mode select:focus {
+    background: #f0f0f0;
+}
 
-    .result p {
-        margin: 8px 0;
-        font-size: 17px;
-    }
+.result {
+    margin-top: 15px;
+    padding: 10px;
+    background: var(--highlight-bg);
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 8px rgba(0,0,0,0.4);
+    font-size: 14px;
+}
 
-    .total {
-        font-size: 21px;
-        font-weight: bold;
-        color: var(--accent);
-    }
+.result p {
+    margin: 5px 0;
+}
 
-    .note {
-        margin-top: 12px;
-        font-size: 13px;
-        font-style: italic;
-        color: var(--note-color);
-    }
+.total {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--accent);
+}
 
-    /* ✅ Compact Mobile Layout */
-    @media (max-width: 500px) {
-        body {
-            padding: 0;
-            justify-content: center;
-            align-items: center;
-        }
-        h2 {
-            font-size: 20px;
-            margin-bottom: 12px;
-        }
-        .calculator {
-            padding: 20px 20px;
-            width: 80%;
-        }
-        label {
-            margin-top: 10px;
-            font-size: 14px;
-        }
-        .input-group {
-            flex-direction: column;
-            gap: 4px;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 5px;
-            font-size: 15px;
-        }
-        select {
-            font-size: 15px;
-            padding: 6px;
-        }
-        .result {
-            padding: 10px;
-        }
-        .result p {
-            font-size: 15px;
-            margin: 6px 0;
-        }
-        .total {
-            font-size: 18px;
-        }
-        .theme-toggle {
-            top: 10px;
-            right: 10px;
-            font-size: 12px;
-            padding: 4px 7px;
-        }
-    }
+.note {
+    font-size: 12px;
+    font-style: italic;
+    color: var(--note-color);
+}
+
+@media (max-width: 600px) {
+    body { padding: 10px; }
+    h2 { font-size: 18px; margin-bottom: 10px; }
+    .calculator { padding: 12px 14px; width: 92%; }
+    label { width: 85px; font-size: 14px; }
+    input, select { font-size: 14px; padding: 4px; }
+    .result { padding: 8px; font-size: 13px; }
+    .total { font-size: 16px; }
+    .top-buttons { top: 8px; right: 8px; gap: 5px; }
+    .top-btn { font-size: 11px; padding: 3px 6px; }
+}
 </style>
 </head>
 <body>
 
-<!-- 🌗 Theme Toggle Button -->
-<button class="theme-toggle" id="themeToggle">☀️ Light Mode</button>
+<div class="top-buttons">
+    <button class="top-btn" id="themeToggle">☀️ Light Mode</button>
+</div>
 
 <h2>Footage Calculator</h2>
 
-<div class="calculator">
-    <div>
-        <label>Height:</label>
-        <div class="input-group">
-            <input type="number" id="heightFt" value="0" min="0" placeholder="ft"> ft
-            <input type="number" id="heightIn" value="0" min="0" placeholder="in"> in
-        </div>
-    </div>
+<div class="tab-buttons">
+    <button class="active" data-tab="wall">Wall/Ceiling</button>
+    <button data-tab="gable">Gable</button>
+</div>
 
-    <div>
-        <label>Length:</label>
-        <div class="input-group">
-            <input type="number" id="lengthFt" value="0" min="0" placeholder="ft"> ft
-            <input type="number" id="lengthIn" value="0" min="0" placeholder="in"> in
-        </div>
+<!-- Wall/Ceiling Calculator -->
+<div class="calculator active" id="wall">
+    <div class="input-row">
+        <label for="wallHeight">Height (ft):</label>
+        <input type="number" id="wallHeight" value="0" min="0">
     </div>
-
-    <div>
-        <label>Board Type:</label>
-        <select id="boardSelect">
+    <div class="input-row">
+        <label for="wallLength">Length (ft):</label>
+        <input type="number" id="wallLength" value="0" min="0">
+    </div>
+    <div class="input-row">
+        <label for="wallBoard">Board Type:</label>
+        <select id="wallBoard">
             <option value="1">1x6 T&G</option>
             <option value="2">1x8 T&G</option>
             <option value="3">1x10 T&G</option>
@@ -257,13 +222,48 @@
             <option value="6">1x8 Shiplap</option>
             <option value="7">1x10 Shiplap</option>
             <option value="8">1x12 Shiplap</option>
+            <option value="9">2x6 Log Siding</option>
+            <option value="10">2x8 Log Siding</option>
         </select>
     </div>
-
     <div class="result">
-        <p class="total">Linear Feet: <span id="linearFeet">0</span></p>
-        <p>Standard Grade Price: <span id="standardPrice">$0.00</span></p>
-        <p>Cabin Grade Price: <span id="cabinPrice">$0.00</span></p>
+        <p class="total">Linear Feet: <span id="wallLinearFeet">0</span></p>
+        <p>Standard Grade Price: <span id="wallStandardPrice">$0.00</span></p>
+        <p>Cabin Grade Price: <span id="wallCabinPrice">$0.00</span></p>
+        <p class="note">Recommended to round up for waste</p>
+        <p class="note">Prices Include Tax</p>
+    </div>
+</div>
+
+<!-- Gable Calculator -->
+<div class="calculator" id="gable">
+    <div class="input-row">
+        <label for="gableHeight">Gable Height (ft):</label>
+        <input type="number" id="gableHeight" value="0" min="0">
+    </div>
+    <div class="input-row">
+        <label for="gableWidth">Base Width (ft):</label>
+        <input type="number" id="gableWidth" value="0" min="0">
+    </div>
+    <div class="input-row">
+        <label for="gableBoard">Board Type:</label>
+        <select id="gableBoard">
+            <option value="1">1x6 T&G</option>
+            <option value="2">1x8 T&G</option>
+            <option value="3">1x10 T&G</option>
+            <option value="4">1x12 T&G</option>
+            <option value="5">1x6 Shiplap</option>
+            <option value="6">1x8 Shiplap</option>
+            <option value="7">1x10 Shiplap</option>
+            <option value="8">1x12 Shiplap</option>
+            <option value="9">2x6 Log Siding</option>
+            <option value="10">2x8 Log Siding</option>
+        </select>
+    </div>
+    <div class="result">
+        <p class="total">Linear Feet: <span id="gableLinearFeet">0</span></p>
+        <p>Standard Grade Price: <span id="gableStandardPrice">$0.00</span></p>
+        <p>Cabin Grade Price: <span id="gableCabinPrice">$0.00</span></p>
         <p class="note">Recommended to round up for waste</p>
         <p class="note">Prices Include Tax</p>
     </div>
@@ -279,55 +279,54 @@ const boardData = {
     6: { width: 6.75, priceStandard: 1.06, priceCabin: 0.60 },
     7: { width: 8.875, priceStandard: 1.34, priceCabin: 0.75 },
     8: { width: 10.75, priceStandard: 1.80, priceCabin: 0.90 },
+    9: { width: 5, priceStandard: 1.90, priceCabin: 1.17 },
+    10:{ width: 7, priceStandard: 2.45, priceCabin: 1.55 },
 };
 
-function calculate() {
-    const heightFt = parseFloat(document.getElementById('heightFt').value) || 0;
-    const heightIn = parseFloat(document.getElementById('heightIn').value) || 0;
-    const lengthFt = parseFloat(document.getElementById('lengthFt').value) || 0;
-    const lengthIn = parseFloat(document.getElementById('lengthIn').value) || 0;
-    const boardKey = document.getElementById('boardSelect').value;
-
-    const totalHeightIn = (heightFt * 12) + heightIn;
-    const totalLengthFt = lengthFt + (lengthIn / 12);
+// Wall calculator
+function calculateWall() {
+    const height = parseFloat(document.getElementById('wallHeight').value) || 0;
+    const length = parseFloat(document.getElementById('wallLength').value) || 0;
+    const boardKey = parseInt(document.getElementById('wallBoard').value,10);
     const board = boardData[boardKey];
 
+    let totalHeightIn = height * 12;
     let boardsPerRow = Math.ceil(totalHeightIn / board.width);
-    let linearFeet = Math.ceil(boardsPerRow * totalLengthFt);
+    let linearFeet = Math.ceil(boardsPerRow * length);
     if (linearFeet % 2 !== 0) linearFeet++;
 
-    const standardPrice = (linearFeet * board.priceStandard * 1.06).toFixed(2);
-    const cabinPrice = (linearFeet * board.priceCabin * 1.06).toFixed(2);
-
-    document.getElementById('linearFeet').textContent = linearFeet;
-    document.getElementById('standardPrice').textContent = `$${standardPrice}`;
-    document.getElementById('cabinPrice').textContent = `$${cabinPrice}`;
+    document.getElementById('wallLinearFeet').textContent = linearFeet.toLocaleString();
+    document.getElementById('wallStandardPrice').textContent = `$${(linearFeet*board.priceStandard*1.06).toFixed(2)}`;
+    document.getElementById('wallCabinPrice').textContent = `$${(linearFeet*board.priceCabin*1.06).toFixed(2)}`;
 }
 
-// Input logic + zoom reset
-document.querySelectorAll('input, select').forEach(el => {
-    el.addEventListener('input', calculate);
-});
+// Gable calculator
+function calculateGable() {
+    const height = parseFloat(document.getElementById('gableHeight').value) || 0;
+    const width = parseFloat(document.getElementById('gableWidth').value) || 0;
+    const boardKey = parseInt(document.getElementById('gableBoard').value,10);
+    const board = boardData[boardKey];
 
-document.querySelectorAll('input[type="number"]').forEach(input => {
-    input.addEventListener('focus', () => {
-        if (input.value === "0") input.value = "";
-    });
-    input.addEventListener('blur', () => {
-        if (input.value === "") input.value = "0";
-        calculate();
+    const area = 0.75 * height * width;
+    const coverage = board.width / 12;
+    let linearFeet = Math.ceil(area / coverage);
+    if (linearFeet % 2 !== 0) linearFeet++;
 
-        // ✅ Reset zoom to default (for mobile Safari/Chrome)
-        setTimeout(() => {
-            document.body.scrollIntoView({ behavior: "smooth", block: "center" });
-            document.activeElement.blur();
-        }, 150);
-    });
-});
+    document.getElementById('gableLinearFeet').textContent = linearFeet.toLocaleString();
+    document.getElementById('gableStandardPrice').textContent = `$${(linearFeet*board.priceStandard*1.06).toFixed(2)}`;
+    document.getElementById('gableCabinPrice').textContent = `$${(linearFeet*board.priceCabin*1.06).toFixed(2)}`;
+}
 
-calculate();
+// Event listeners
+['wallHeight','wallLength','wallBoard'].forEach(id =>
+    document.getElementById(id).addEventListener('input', calculateWall));
+['gableHeight','gableWidth','gableBoard'].forEach(id =>
+    document.getElementById(id).addEventListener('input', calculateGable));
 
-/* 🌗 Theme Toggle Logic */
+calculateWall();
+calculateGable();
+
+// Theme toggle
 const themeToggle = document.getElementById('themeToggle');
 function applyTheme(light) {
     document.body.classList.toggle('light-mode', light);
@@ -336,7 +335,16 @@ function applyTheme(light) {
 }
 themeToggle.addEventListener('click', () => applyTheme(!document.body.classList.contains('light-mode')));
 if (localStorage.getItem('theme') === 'light') applyTheme(true);
-</script>
 
+// Tab switch
+document.querySelectorAll('.tab-buttons button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-buttons button').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.calculator').forEach(calc => calc.classList.remove('active'));
+        document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+});
+</script>
 </body>
 </html>
