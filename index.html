@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 <title>Footage Calculator</title>
 <style>
 :root {
@@ -290,7 +290,6 @@ function calculateWall() {
     const feet = parseFloat(document.getElementById('wallHeightFeet').value) || 0;
     const inches = parseFloat(document.getElementById('wallHeightInches').value) || 0;
     const height = feet + inches / 12;
-
     const length = parseFloat(document.getElementById('wallLength').value) || 0;
     const boardKey = parseInt(document.getElementById('wallBoard').value,10);
     const board = boardData[boardKey];
@@ -310,7 +309,6 @@ function calculateGable() {
     const feet = parseFloat(document.getElementById('gableHeightFeet').value) || 0;
     const inches = parseFloat(document.getElementById('gableHeightInches').value) || 0;
     const height = feet + inches / 12;
-
     const width = parseFloat(document.getElementById('gableWidth').value) || 0;
     const boardKey = parseInt(document.getElementById('gableBoard').value,10);
     const board = boardData[boardKey];
@@ -325,7 +323,7 @@ function calculateGable() {
     document.getElementById('gableCabinPrice').textContent = `$${(linearFeet*board.priceCabin*1.06).toFixed(2)}`;
 }
 
-// Event listeners
+// Event listeners for calculation
 ['wallHeightFeet','wallHeightInches','wallLength','wallBoard'].forEach(id =>
     document.getElementById(id).addEventListener('input', calculateWall));
 ['gableHeightFeet','gableHeightInches','gableWidth','gableBoard'].forEach(id =>
@@ -352,6 +350,29 @@ document.querySelectorAll('.tab-buttons button').forEach(btn => {
         document.querySelectorAll('.calculator').forEach(calc => calc.classList.remove('active'));
         document.getElementById(btn.dataset.tab).classList.add('active');
     });
+});
+
+// Auto erase 0 on focus and restore 0 on blur if empty
+document.querySelectorAll('input[type="number"]').forEach(input => {
+    input.addEventListener('focus', () => {
+        if (input.value === '0') input.value = '';
+    });
+    input.addEventListener('blur', () => {
+        if (input.value === '') input.value = '0';
+    });
+});
+
+// Auto zoom out on mobile after input blur
+function resetZoom() {
+    const viewport = document.querySelector('meta[name=viewport]');
+    if (!viewport) return;
+    viewport.content = "width=device-width, initial-scale=1, maximum-scale=1";
+    setTimeout(() => {
+        viewport.content = "width=device-width, initial-scale=1, maximum-scale=5";
+    }, 300);
+}
+document.querySelectorAll('input[type="number"]').forEach(input => {
+    input.addEventListener('blur', resetZoom);
 });
 </script>
 </body>
