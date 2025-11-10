@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Footage Calculator</title>
 <style>
 :root {
@@ -123,10 +123,11 @@ label {
     color: var(--text-color);
 }
 
+/* 👇 Prevent zoom on mobile by keeping font-size >= 16px */
 input, select {
     flex: 1;
-    padding: 5px;
-    font-size: 15px;
+    padding: 6px;
+    font-size: 16px; /* prevents iOS zoom */
     border: 1px solid #333;
     border-radius: 5px;
     background: rgba(42, 42, 42, 0.8);
@@ -180,7 +181,7 @@ body.light-mode input:focus, body.light-mode select:focus {
     h2 { font-size: 18px; margin-bottom: 10px; }
     .calculator { padding: 12px 14px; width: 92%; }
     label { width: 85px; font-size: 14px; }
-    input, select { font-size: 14px; padding: 4px; }
+    input, select { font-size: 16px; padding: 5px; } /* ensure consistent font size */
     .result { padding: 8px; font-size: 13px; }
     .total { font-size: 16px; }
     .top-buttons { top: 8px; right: 8px; gap: 5px; }
@@ -360,19 +361,6 @@ document.querySelectorAll('input[type="number"]').forEach(input => {
     input.addEventListener('blur', () => {
         if (input.value === '') input.value = '0';
     });
-});
-
-// Auto zoom out on mobile after input blur
-function resetZoom() {
-    const viewport = document.querySelector('meta[name=viewport]');
-    if (!viewport) return;
-    viewport.content = "width=device-width, initial-scale=1, maximum-scale=1";
-    setTimeout(() => {
-        viewport.content = "width=device-width, initial-scale=1, maximum-scale=5";
-    }, 300);
-}
-document.querySelectorAll('input[type="number"]').forEach(input => {
-    input.addEventListener('blur', resetZoom);
 });
 </script>
 </body>
