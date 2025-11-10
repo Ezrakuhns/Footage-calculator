@@ -1,5 +1,5 @@
 {
-  "1": { "width": 5.125, "priceStandard": 0.80, "priceCabin": 0.45 },
+  "1": { "width": 5.125, "priceStandard": 9.80, "priceCabin": 0.45 },
   "2": { "width": 7, "priceStandard": 1.06, "priceCabin": 0.60 },
   "3": { "width": 8.875, "priceStandard": 1.32, "priceCabin": 0.75 },
   "4": { "width": 10.875, "priceStandard": 1.60, "priceCabin": 0.90 },
