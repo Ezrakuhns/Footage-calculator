@@ -204,12 +204,13 @@ body.light-mode input:focus, body.light-mode select:focus {
 <!-- Wall/Ceiling Calculator -->
 <div class="calculator active" id="wall">
     <div class="input-row">
-        <label for="wallHeight">Height (ft):</label>
-        <input type="number" id="wallHeight" placeholder="0" min="0">
+        <label for="wallHeightFeet">Height:</label>
+        <input type="number" id="wallHeightFeet" value="0" min="0"> ft
+        <input type="number" id="wallHeightInches" value="0" min="0" max="11"> in
     </div>
     <div class="input-row">
         <label for="wallLength">Length (ft):</label>
-        <input type="number" id="wallLength" placeholder="0" min="0">
+        <input type="number" id="wallLength" value="0" min="0">
     </div>
     <div class="input-row">
         <label for="wallBoard">Board Type:</label>
@@ -238,12 +239,13 @@ body.light-mode input:focus, body.light-mode select:focus {
 <!-- Gable Calculator -->
 <div class="calculator" id="gable">
     <div class="input-row">
-        <label for="gableHeight">Gable Height (ft):</label>
-        <input type="number" id="gableHeight" placeholder="0" min="0">
+        <label for="gableHeightFeet">Gable Height:</label>
+        <input type="number" id="gableHeightFeet" value="0" min="0"> ft
+        <input type="number" id="gableHeightInches" value="0" min="0" max="11"> in
     </div>
     <div class="input-row">
         <label for="gableWidth">Base Width (ft):</label>
-        <input type="number" id="gableWidth" placeholder="0" min="0">
+        <input type="number" id="gableWidth" value="0" min="0">
     </div>
     <div class="input-row">
         <label for="gableBoard">Board Type:</label>
@@ -285,7 +287,10 @@ const boardData = {
 
 // Wall calculator
 function calculateWall() {
-    const height = parseFloat(document.getElementById('wallHeight').value) || 0;
+    const feet = parseFloat(document.getElementById('wallHeightFeet').value) || 0;
+    const inches = parseFloat(document.getElementById('wallHeightInches').value) || 0;
+    const height = feet + inches / 12;
+
     const length = parseFloat(document.getElementById('wallLength').value) || 0;
     const boardKey = parseInt(document.getElementById('wallBoard').value,10);
     const board = boardData[boardKey];
@@ -302,7 +307,10 @@ function calculateWall() {
 
 // Gable calculator
 function calculateGable() {
-    const height = parseFloat(document.getElementById('gableHeight').value) || 0;
+    const feet = parseFloat(document.getElementById('gableHeightFeet').value) || 0;
+    const inches = parseFloat(document.getElementById('gableHeightInches').value) || 0;
+    const height = feet + inches / 12;
+
     const width = parseFloat(document.getElementById('gableWidth').value) || 0;
     const boardKey = parseInt(document.getElementById('gableBoard').value,10);
     const board = boardData[boardKey];
@@ -318,9 +326,9 @@ function calculateGable() {
 }
 
 // Event listeners
-['wallHeight','wallLength','wallBoard'].forEach(id =>
+['wallHeightFeet','wallHeightInches','wallLength','wallBoard'].forEach(id =>
     document.getElementById(id).addEventListener('input', calculateWall));
-['gableHeight','gableWidth','gableBoard'].forEach(id =>
+['gableHeightFeet','gableHeightInches','gableWidth','gableBoard'].forEach(id =>
     document.getElementById(id).addEventListener('input', calculateGable));
 
 calculateWall();
