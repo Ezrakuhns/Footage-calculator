@@ -6,18 +6,8 @@
 <title>Footage Calculator</title>
 <style>
 :root {
-    --bg-color: #121212;
-    --card-bg: rgba(30, 30, 30, 0.75);
-    --text-color: #f5f5f5;
-    --accent: #4caf50;
-    --muted: #aaa;
-    --highlight-bg: rgba(38, 50, 56, 0.7);
-    --note-color: #ccc;
-    --blur: 10px;
-}
-body.light-mode {
     --bg-color: #f4f4f4;
-    --card-bg: rgba(255, 255, 255, 0.8);
+    --card-bg: rgba(255, 255, 255, 0.9);
     --text-color: #222;
     --accent: #2e7d32;
     --muted: #555;
@@ -35,36 +25,12 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-image: radial-gradient(circle at top left, #1a1a1a, #0d0d0d);
+    background-image: radial-gradient(circle at top left, #ffffff, #dfe8dd);
 }
 h2 {
     text-align: center;
     color: var(--accent);
     margin-bottom: 20px;
-}
-.top-buttons {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    display: flex;
-    gap: 6px;
-    z-index: 10;
-}
-.top-btn {
-    background: var(--card-bg);
-    color: var(--text-color);
-    border: 1px solid var(--muted);
-    border-radius: 6px;
-    padding: 4px 8px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: background 0.3s, color 0.3s, border 0.3s;
-    backdrop-filter: blur(var(--blur));
-}
-.top-btn:hover {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
 }
 .tab-buttons {
     display: flex;
@@ -100,11 +66,24 @@ h2 {
 .calculator.active {
     display: flex;
 }
+#gable {
+    max-width: 450px;
+}
 .input-row {
     display: flex;
     align-items: center;
     margin-top: 10px;
     gap: 8px;
+    flex-wrap: wrap;
+}
+.input-row .input-wrapper {
+    min-width: 80px;
+}
+.unit-label {
+    font-weight: bold;
+    color: var(--accent);
+    font-size: 14px;
+    margin: 0 4px;
 }
 label {
     width: 100px;
@@ -115,24 +94,62 @@ input, select {
     flex: 1;
     padding: 6px;
     font-size: 16px;
-    border: 1px solid #333;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    background: rgba(42, 42, 42, 0.8);
-    color: var(--text-color);
-    transition: border 0.2s, background 0.2s;
-}
-body.light-mode input, body.light-mode select {
-    background: rgba(255, 255, 255, 0.9);
-    border-color: #ccc;
+    background: rgba(255, 255, 255, 0.95);
     color: #222;
+    transition: border 0.2s, background 0.2s;
 }
 input:focus, select:focus {
     outline: none;
     border-color: var(--accent);
-    background: rgba(60, 60, 60, 0.9);
-}
-body.light-mode input:focus, body.light-mode select:focus {
     background: #f0f0f0;
+}
+input[type=number] { 
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.input-wrapper {
+    display: inline-flex;
+    position: relative;
+    flex: 1;
+    align-items: center;
+}
+.input-wrapper input {
+    flex: 1;
+    padding-right: 28px;
+}
+.clear-btn {
+    position: absolute;
+    right: 6px;
+    background: #ccc;
+    border: none;
+    border-radius: 3px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 1;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+.clear-btn:hover {
+    background: #999;
+}
+canvas {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-top: 15px;
+    background: #fff;
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
 }
 .result {
     margin-top: 15px;
@@ -164,17 +181,11 @@ body.light-mode input:focus, body.light-mode select:focus {
     input, select { font-size: 16px; padding: 5px; }
     .result { padding: 8px; font-size: 13px; }
     .total { font-size: 16px; }
-    .top-buttons { top: 8px; right: 8px; gap: 5px; }
-    .top-btn { font-size: 11px; padding: 3px 6px; }
+    canvas { width: 100%; height: auto; }
 }
 </style>
 </head>
 <body>
-
-<div class="top-buttons">
-    <button class="top-btn" id="themeToggle">☀️ Light Mode</button>
-</div>
-
 <h2>Footage Calculator</h2>
 
 <div class="tab-buttons">
@@ -186,8 +197,10 @@ body.light-mode input:focus, body.light-mode select:focus {
 <div class="calculator active" id="wall">
     <div class="input-row">
         <label for="wallHeightFeet">Height:</label>
-        <input type="number" id="wallHeightFeet" value="0" min="0"> ft
-        <input type="number" id="wallHeightInches" value="0" min="0" max="11"> in
+        <span class="unit-label">ft</span>
+        <input type="number" id="wallHeightFeet" value="0" min="0">
+        <input type="number" id="wallHeightInches" value="0" min="0" max="11">
+        <span class="unit-label">in</span>
     </div>
     <div class="input-row">
         <label for="wallLength">Length (ft):</label>
@@ -219,61 +232,72 @@ body.light-mode input:focus, body.light-mode select:focus {
 
 <!-- Gable Calculator -->
 <div class="calculator" id="gable">
-    <div class="input-row">
-        <label for="gableHeightFeet">Gable Height:</label>
-        <input type="number" id="gableHeightFeet" value="0" min="0"> ft
-        <input type="number" id="gableHeightInches" value="0" min="0" max="11"> in
-    </div>
-    <div class="input-row">
-        <label for="gableWidth">Base Width (ft):</label>
-        <input type="number" id="gableWidth" value="0" min="0">
-    </div>
-    <div class="input-row">
-        <label for="gableBoard">Board Type:</label>
-        <select id="gableBoard">
-            <option value="1">1x6 T&G</option>
-            <option value="2">1x8 T&G</option>
-            <option value="3">1x10 T&G</option>
-            <option value="4">1x12 T&G</option>
-            <option value="5">1x6 Shiplap</option>
-            <option value="6">1x8 Shiplap</option>
-            <option value="7">1x10 Shiplap</option>
-            <option value="8">1x12 Shiplap</option>
-            <option value="9">2x6 Log Siding</option>
-            <option value="10">2x8 Log Siding</option>
-        </select>
-    </div>
-    <div class="result">
-        <p class="total">Linear Feet: <span id="gableLinearFeet">0</span></p>
-        <p>Standard Grade Price: <span id="gableStandardPrice">$0.00</span></p>
-        <p>Cabin Grade Price: <span id="gableCabinPrice">$0.00</span></p>
-        <p class="note">Recommended to round up for waste</p>
-        <p class="note">Prices Include Tax</p>
-    </div>
+  <div class="input-row">
+    <label for="heightFt">Height:</label>
+    <span class="unit-label">ft</span>
+    <span class="input-wrapper">
+      <input type="number" id="heightFt" min="0" step="1" value="0">
+      <button type="button" class="clear-btn" data-target="heightFt">×</button>
+    </span>
+    <span class="input-wrapper">
+      <input type="number" id="heightIn" min="0" max="11" step="1" value="0">
+      <button type="button" class="clear-btn" data-target="heightIn">×</button>
+    </span>
+    <span class="unit-label">in</span>
+  </div>
+  
+  <div class="input-row">
+    <label for="baseFt">Base Width (ft):</label>
+    <span class="input-wrapper">
+      <input type="number" id="baseFt" min="0" step="1" value="0">
+      <button type="button" class="clear-btn" data-target="baseFt">×</button>
+    </span>
+  </div>
+  
+  <div class="input-row">
+    <label for="boardWidth">Board Type:</label>
+    <select id="boardWidth">
+      <option value="1">1x6 T&G</option>
+      <option value="2">1x8 T&G</option>
+      <option value="3">1x10 T&G</option>
+      <option value="4">1x12 T&G</option>
+      <option value="5">1x6 Shiplap</option>
+      <option value="6">1x8 Shiplap</option>
+      <option value="7">1x10 Shiplap</option>
+      <option value="8">1x12 Shiplap</option>
+      <option value="9">2x6 Log Siding</option>
+      <option value="10">2x8 Log Siding</option>
+    </select>
+  </div>
+
+  <div class="result">
+    <p>Angle (base-to-side): <span id="angle">0</span>°</p>
+    <p class="total">Linear Feet: <span id="linearFeet">0</span></p>
+    <p>Standard Grade Price: $<span id="priceStandard">0.00</span></p>
+    <p>Cabin Grade Price: $<span id="priceCabin">0.00</span></p>
+    <p class="note">this is an exact amount we recomend figuring some extra</p>
+    <p class="note">Prices Include Tax</p>
+  </div>
+
+  <canvas id="triangleCanvas" width="400" height="300"></canvas>
 </div>
 
 <script>
-let boardData = {};
-
-// Load board prices and widths from prices.json
-fetch('prices.json')
-  .then(response => {
-    if (!response.ok) throw new Error('Failed to load prices.json');
-    return response.json();
-  })
-  .then(data => {
-    boardData = data;
-    calculateWall();
-    calculateGable();
-  })
-  .catch(error => {
-    console.error('Error loading board data:', error);
-    alert('Could not load pricing data. Please check prices.json.');
-  });
+const boardData = {
+  "1": { "width": 5.125, "priceStandard": 0.80, "priceCabin": 0.45 },
+  "2": { "width": 7, "priceStandard": 1.06, "priceCabin": 0.60 },
+  "3": { "width": 8.875, "priceStandard": 1.32, "priceCabin": 0.75 },
+  "4": { "width": 10.875, "priceStandard": 1.60, "priceCabin": 0.90 },
+  "5": { "width": 5, "priceStandard": 0.80, "priceCabin": 0.45 },
+  "6": { "width": 6.75, "priceStandard": 1.06, "priceCabin": 0.60 },
+  "7": { "width": 8.875, "priceStandard": 1.34, "priceCabin": 0.75 },
+  "8": { "width": 10.75, "priceStandard": 1.80, "priceCabin": 0.90 },
+  "9": { "width": 5, "priceStandard": 1.90, "priceCabin": 1.17 },
+  "10": { "width": 7, "priceStandard": 2.45, "priceCabin": 1.55 }
+};
 
 // Wall calculator
 function calculateWall() {
-  if (!Object.keys(boardData).length) return;
   const feet = parseFloat(document.getElementById('wallHeightFeet').value) || 0;
   const inches = parseFloat(document.getElementById('wallHeightInches').value) || 0;
   const height = feet + inches / 12;
@@ -292,40 +316,162 @@ function calculateWall() {
 }
 
 // Gable calculator
+const heightFtInput = document.getElementById('heightFt');
+const heightInInput = document.getElementById('heightIn');
+const baseFtInput = document.getElementById('baseFt');
+const boardWidthSelect = document.getElementById('boardWidth');
+
+const angleOutput = document.getElementById('angle');
+const linearFeetOutput = document.getElementById('linearFeet');
+const priceStandardOutput = document.getElementById('priceStandard');
+const priceCabinOutput = document.getElementById('priceCabin');
+
+const canvas = document.getElementById('triangleCanvas');
+const ctx = canvas.getContext('2d');
+
 function calculateGable() {
-  if (!Object.keys(boardData).length) return;
-  const feet = parseFloat(document.getElementById('gableHeightFeet').value) || 0;
-  const inches = parseFloat(document.getElementById('gableHeightInches').value) || 0;
-  const height = feet + inches / 12;
-  const width = parseFloat(document.getElementById('gableWidth').value) || 0;
-  const boardKey = parseInt(document.getElementById('gableBoard').value, 10);
-  const board = boardData[boardKey];
+  let heightFt = parseInt(heightFtInput.value) || 0;
+  let heightIn = parseInt(heightInInput.value) || 0;
+  let baseFt = parseInt(baseFtInput.value) || 0;
 
-  const area = 0.75 * height * width;
-  const coverage = board.width / 12;
-  let linearFeet = Math.ceil(area / coverage);
-  if (linearFeet % 2 !== 0) linearFeet++;
+  // Convert height and base to inches
+  let height = heightFt * 12 + heightIn;
+  let base = baseFt * 12;
 
-  document.getElementById('gableLinearFeet').textContent = linearFeet.toLocaleString();
-  document.getElementById('gableStandardPrice').textContent = `$${(linearFeet * board.priceStandard * 1.06).toFixed(2)}`;
-  document.getElementById('gableCabinPrice').textContent = `$${(linearFeet * board.priceCabin * 1.06).toFixed(2)}`;
+  if (height <= 0 || base <= 0) {
+    angleOutput.textContent = '0';
+    linearFeetOutput.textContent = '0';
+    priceStandardOutput.textContent = '0.00';
+    priceCabinOutput.textContent = '0.00';
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return;
+  }
+
+  // Calculate base angle (angle between base and right side)
+  // theta = atan(2h / b)
+  let baseAngleRad = Math.atan((2 * height) / base);
+  let baseAngleDeg = (baseAngleRad * 180 / Math.PI);
+  angleOutput.textContent = baseAngleDeg.toFixed(2);
+
+  // Draw triangle preview
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const scale = Math.min(canvas.width / base, canvas.height / height) * 0.85;
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+  
+  const scaledBase = base * scale;
+  const scaledHeight = height * scale;
+  const bottomY = centerY + scaledHeight / 2;
+  const topY = centerY - scaledHeight / 2;
+
+  const leftX = centerX - scaledBase / 2;
+  const rightX = centerX + scaledBase / 2;
+
+  ctx.beginPath();
+  ctx.moveTo(leftX, bottomY);
+  ctx.lineTo(centerX, topY);
+  ctx.lineTo(rightX, bottomY);
+  ctx.closePath();
+  ctx.stroke();
+
+  // Compute runs
+  const boardWidth = boardData[boardWidthSelect.value].width; // inches
+  let numRuns = Math.ceil(height / boardWidth);
+
+  // Draw boards as filled trapezoids between horizontal run lines, clipped by triangle sides
+  const totalHeightPx = bottomY - topY;
+  const halfBaseInches = base / 2;
+  for (let i = 1; i <= numRuns; i++) {
+    let yTopBand = bottomY - i * (boardWidth * scale);
+    let yBottomBand = bottomY - (i - 1) * (boardWidth * scale);
+    if (yBottomBand < topY) break; // fully above peak
+    if (yTopBand < topY) yTopBand = topY; // clip top band to peak
+
+    // At a given y, horizontal half-width scales linearly from 0 at topY to halfBase at bottomY
+    const fracTop = (yTopBand - topY) / totalHeightPx;
+    const fracBottom = (yBottomBand - topY) / totalHeightPx;
+    const halfTopInches = halfBaseInches * Math.max(0, Math.min(1, fracTop));
+    const halfBottomInches = halfBaseInches * Math.max(0, Math.min(1, fracBottom));
+    const halfTopPx = halfTopInches * scale;
+    const halfBottomPx = halfBottomInches * scale;
+
+    const leftTopX = centerX - halfTopPx;
+    const rightTopX = centerX + halfTopPx;
+    const leftBottomX = centerX - halfBottomPx;
+    const rightBottomX = centerX + halfBottomPx;
+
+    ctx.beginPath();
+    ctx.moveTo(leftTopX, yTopBand);
+    ctx.lineTo(rightTopX, yTopBand);
+    ctx.lineTo(rightBottomX, yBottomBand);
+    ctx.lineTo(leftBottomX, yBottomBand);
+    ctx.closePath();
+    ctx.fillStyle = i % 2 === 0 ? '#e6f2ff' : '#f2f6fa';
+    ctx.fill();
+    ctx.strokeStyle = '#88a';
+    ctx.stroke();
+  }
+
+  // Angleback calculation:
+  // Place a line with same angle at bottom right of a board (width=W).
+  // Horizontal offset at top equals W * cot(theta). Angleback = 1.983 * offset.
+  const cot = (r) => 1 / Math.tan(r);
+  let anglebackInches = 1.983 * (boardWidth * cot(baseAngleRad));
+
+  // Runs summation rule (per latest spec):
+  // run1 (bottom) = base
+  // run(k) = run(k-1) - angleback, k>=2
+  // sum all runs, flooring negatives at 0
+  let runsSumInches = 0;
+  let currentRun = base;
+  for (let i = 1; i <= numRuns; i++) {
+    if (currentRun < 0) currentRun = 0;
+    runsSumInches += currentRun;
+    currentRun = currentRun - anglebackInches;
+  }
+
+  // Linear feet: sum inches / 12, round up to nearest even number
+  let rawFeet = Math.ceil(runsSumInches / 12);
+  let linearFeet = rawFeet % 2 === 0 ? rawFeet : rawFeet + 1;
+  linearFeetOutput.textContent = linearFeet.toString();
+
+  let priceData = boardData[boardWidthSelect.value];
+  priceStandardOutput.textContent = (linearFeet * priceData.priceStandard).toFixed(2);
+  priceCabinOutput.textContent = (linearFeet * priceData.priceCabin).toFixed(2);
 }
 
 // Event listeners
 ['wallHeightFeet','wallHeightInches','wallLength','wallBoard'].forEach(id =>
   document.getElementById(id).addEventListener('input', calculateWall));
-['gableHeightFeet','gableHeightInches','gableWidth','gableBoard'].forEach(id =>
-  document.getElementById(id).addEventListener('input', calculateGable));
 
-// Theme toggle
-const themeToggle = document.getElementById('themeToggle');
-function applyTheme(light) {
-  document.body.classList.toggle('light-mode', light);
-  themeToggle.textContent = light ? '🌙 Dark Mode' : '☀️ Light Mode';
-  localStorage.setItem('theme', light ? 'light' : 'dark');
-}
-themeToggle.addEventListener('click', () => applyTheme(!document.body.classList.contains('light-mode')));
-if (localStorage.getItem('theme') === 'light') applyTheme(true);
+// Gable event listeners
+[heightFtInput, heightInInput, baseFtInput, boardWidthSelect].forEach(el => {
+  el.addEventListener('input', calculateGable);
+  el.addEventListener('focus', () => { if (el.value == "0") el.value = ""; });
+  el.addEventListener('blur', () => { if (el.value === "") el.value = 0; });
+});
+
+// Enforce integer-only typing for number inputs
+[heightFtInput, heightInInput, baseFtInput].forEach(el => {
+  el.addEventListener('keydown', (e) => {
+    const allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab'];
+    if (allowed.includes(e.key)) return;
+    if (!/^[0-9]$/.test(e.key)) e.preventDefault();
+  });
+});
+
+// Clear button handlers
+document.querySelectorAll('.clear-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const targetId = btn.getAttribute('data-target');
+    const targetInput = document.getElementById(targetId);
+    if (targetInput) {
+      targetInput.value = '0';
+      targetInput.dispatchEvent(new Event('input'));
+    }
+  });
+});
 
 // Tab switch
 document.querySelectorAll('.tab-buttons button').forEach(btn => {
@@ -334,11 +480,17 @@ document.querySelectorAll('.tab-buttons button').forEach(btn => {
     btn.classList.add('active');
     document.querySelectorAll('.calculator').forEach(calc => calc.classList.remove('active'));
     document.getElementById(btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'wall') {
+      calculateWall();
+    } else {
+      calculateGable();
+    }
   });
 });
 
-// Auto erase 0 on focus
-document.querySelectorAll('input[type="number"]').forEach(input => {
+// Auto erase 0 on focus (for wall calculator inputs only)
+['wallHeightFeet','wallHeightInches','wallLength'].forEach(id => {
+  const input = document.getElementById(id);
   input.addEventListener('focus', () => {
     if (input.value === '0') input.value = '';
   });
@@ -346,6 +498,9 @@ document.querySelectorAll('input[type="number"]').forEach(input => {
     if (input.value === '') input.value = '0';
   });
 });
+
+calculateWall();
+calculateGable();
 </script>
 </body>
 </html>
