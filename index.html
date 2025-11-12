@@ -21,7 +21,8 @@ body {
     color: var(--text-color);
     padding: 25px;
     min-height: 100vh;
-    transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  position: relative; /* allow absolutely positioned background elements */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -62,6 +63,8 @@ h2 {
     display: none;
     flex-direction: column;
     align-items: stretch;
+  position: relative;
+  z-index: 2; /* sit above the background watermark */
 }
 .calculator.active {
     display: flex;
@@ -124,6 +127,21 @@ input[type=number]::-webkit-outer-spin-button {
     flex: 1;
     padding-right: 28px;
 }
+
+/* Compact widths for wall height inputs so feet and inches fit side-by-side */
+#wallHeightFeet {
+  flex: 0 0 72px; /* fixed narrow width */
+  max-width: 72px;
+}
+#wallHeightInches {
+  flex: 0 0 56px;
+  max-width: 56px;
+}
+
+@media (max-width: 600px) {
+  #wallHeightFeet { flex: 0 0 60px; max-width: 60px; }
+  #wallHeightInches { flex: 0 0 48px; max-width: 48px; }
+}
 .clear-btn {
     position: absolute;
     right: 6px;
@@ -173,6 +191,8 @@ canvas {
     font-style: italic;
     color: var(--note-color);
 }
+/* Tiny bottom-right session counter */
+/* usage stats removed */
 @media (max-width: 600px) {
     body { padding: 10px; }
     h2 { font-size: 18px; margin-bottom: 10px; }
@@ -188,6 +208,7 @@ canvas {
 <body>
 <h2>Footage Calculator</h2>
 
+
 <div class="tab-buttons">
     <button class="active" data-tab="wall">Wall/Ceiling</button>
     <button data-tab="gable">Gable</button>
@@ -195,37 +216,35 @@ canvas {
 
 <!-- Wall Calculator -->
 <div class="calculator active" id="wall">
-    <div class="input-row">
-        <label for="wallHeightFeet">Height:</label>
-        <span class="unit-label">ft</span>
-        <input type="number" id="wallHeightFeet" value="0" min="0">
-        <input type="number" id="wallHeightInches" value="0" min="0" max="11">
-        <span class="unit-label">in</span>
-    </div>
-    <div class="input-row">
-        <label for="wallLength">Length (ft):</label>
-        <input type="number" id="wallLength" value="0" min="0">
-    </div>
+  <div class="input-row">
+    <label for="wallHeightFeet">Height:</label>
+    <span class="unit-label">ft</span>
+    <span class="input-wrapper">
+      <input type="number" id="wallHeightFeet" value="0" min="0">
+      <button type="button" class="clear-btn" data-target="wallHeightFeet">×</button>
+    </span>
+    <span class="input-wrapper">
+      <input type="number" id="wallHeightInches" value="0" min="0" max="11">
+      <button type="button" class="clear-btn" data-target="wallHeightInches">×</button>
+    </span>
+    <span class="unit-label">in</span>
+  </div>
+  <div class="input-row">
+    <label for="wallLength">Length (ft):</label>
+    <span class="input-wrapper">
+      <input type="number" id="wallLength" value="0" min="0">
+      <button type="button" class="clear-btn" data-target="wallLength">×</button>
+    </span>
+  </div>
     <div class="input-row">
         <label for="wallBoard">Board Type:</label>
-        <select id="wallBoard">
-            <option value="1">1x6 T&G</option>
-            <option value="2">1x8 T&G</option>
-            <option value="3">1x10 T&G</option>
-            <option value="4">1x12 T&G</option>
-            <option value="5">1x6 Shiplap</option>
-            <option value="6">1x8 Shiplap</option>
-            <option value="7">1x10 Shiplap</option>
-            <option value="8">1x12 Shiplap</option>
-            <option value="9">2x6 Log Siding</option>
-            <option value="10">2x8 Log Siding</option>
-        </select>
+    <select id="wallBoard"></select>
     </div>
     <div class="result">
         <p class="total">Linear Feet: <span id="wallLinearFeet">0</span></p>
         <p>Standard Grade Price: <span id="wallStandardPrice">$0.00</span></p>
         <p>Cabin Grade Price: <span id="wallCabinPrice">$0.00</span></p>
-        <p class="note">Recommended to round up for waste</p>
+        <p class="note">this is an exact amount we recomend figuring some extra</p>
         <p class="note">Prices Include Tax</p>
     </div>
 </div>
@@ -236,7 +255,7 @@ canvas {
     <label for="heightFt">Height:</label>
     <span class="unit-label">ft</span>
     <span class="input-wrapper">
-      <input type="number" id="heightFt" min="0" step="1" value="0">
+  <input type="number" id="heightFt" min="0" max="100000" step="1" value="0">
       <button type="button" class="clear-btn" data-target="heightFt">×</button>
     </span>
     <span class="input-wrapper">
@@ -249,25 +268,14 @@ canvas {
   <div class="input-row">
     <label for="baseFt">Base Width (ft):</label>
     <span class="input-wrapper">
-      <input type="number" id="baseFt" min="0" step="1" value="0">
+  <input type="number" id="baseFt" min="0" max="200000" step="1" value="0">
       <button type="button" class="clear-btn" data-target="baseFt">×</button>
     </span>
   </div>
   
   <div class="input-row">
     <label for="boardWidth">Board Type:</label>
-    <select id="boardWidth">
-      <option value="1">1x6 T&G</option>
-      <option value="2">1x8 T&G</option>
-      <option value="3">1x10 T&G</option>
-      <option value="4">1x12 T&G</option>
-      <option value="5">1x6 Shiplap</option>
-      <option value="6">1x8 Shiplap</option>
-      <option value="7">1x10 Shiplap</option>
-      <option value="8">1x12 Shiplap</option>
-      <option value="9">2x6 Log Siding</option>
-      <option value="10">2x8 Log Siding</option>
-    </select>
+    <select id="boardWidth"></select>
   </div>
 
   <div class="result">
@@ -296,6 +304,40 @@ const boardData = {
   "10": { "width": 7, "priceStandard": 2.45, "priceCabin": 1.55 }
 };
 
+// Single source of truth for the board option labels (used to populate both selects)
+const boardOptions = [
+  { value: '1', text: '1x6 T&G' },
+  { value: '2', text: '1x8 T&G' },
+  { value: '3', text: '1x10 T&G' },
+  { value: '4', text: '1x12 T&G' },
+  { value: '5', text: '1x6 Shiplap' },
+  { value: '6', text: '1x8 Shiplap' },
+  { value: '7', text: '1x10 Shiplap' },
+  { value: '8', text: '1x12 Shiplap' },
+  { value: '9', text: '2x6 Log Siding' },
+  { value: '10', text: '2x8 Log Siding' }
+];
+
+function populateBoardSelects() {
+  const selects = [document.getElementById('wallBoard'), document.getElementById('boardWidth')];
+  selects.forEach(sel => {
+    if (!sel) return;
+    sel.innerHTML = '';
+    boardOptions.forEach(opt => {
+      const o = document.createElement('option');
+      o.value = opt.value;
+      o.textContent = opt.text;
+      sel.appendChild(o);
+    });
+  });
+}
+
+// Populate selects now so existing logic can reference them immediately
+populateBoardSelects();
+
+// --- Usage stats: only total sessions (displayed in bottom-right) ----------
+// usage stats removed
+
 // Wall calculator
 function calculateWall() {
   const feet = parseFloat(document.getElementById('wallHeightFeet').value) || 0;
@@ -311,8 +353,10 @@ function calculateWall() {
   if (linearFeet % 2 !== 0) linearFeet++;
 
   document.getElementById('wallLinearFeet').textContent = linearFeet.toLocaleString();
-  document.getElementById('wallStandardPrice').textContent = `$${(linearFeet * board.priceStandard * 1.06).toFixed(2)}`;
-  document.getElementById('wallCabinPrice').textContent = `$${(linearFeet * board.priceCabin * 1.06).toFixed(2)}`;
+  const wallStandardVal = linearFeet * board.priceStandard * 1.06;
+  const wallCabinVal = linearFeet * board.priceCabin * 1.06;
+  document.getElementById('wallStandardPrice').textContent = `$${wallStandardVal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+  document.getElementById('wallCabinPrice').textContent = `$${wallCabinVal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 }
 
 // Gable calculator
@@ -330,9 +374,22 @@ const canvas = document.getElementById('triangleCanvas');
 const ctx = canvas.getContext('2d');
 
 function calculateGable() {
+  // read inputs and clamp to allowed maxima
   let heightFt = parseInt(heightFtInput.value) || 0;
   let heightIn = parseInt(heightInInput.value) || 0;
   let baseFt = parseInt(baseFtInput.value) || 0;
+
+  const MAX_HEIGHT_FT = 100000;
+  const MAX_BASE_FT = 200000;
+
+  if (heightFt > MAX_HEIGHT_FT) {
+    heightFt = MAX_HEIGHT_FT;
+    heightFtInput.value = String(MAX_HEIGHT_FT);
+  }
+  if (baseFt > MAX_BASE_FT) {
+    baseFt = MAX_BASE_FT;
+    baseFtInput.value = String(MAX_BASE_FT);
+  }
 
   // Convert height and base to inches
   let height = heightFt * 12 + heightIn;
@@ -433,16 +490,21 @@ function calculateGable() {
   // Linear feet: sum inches / 12, round up to nearest even number
   let rawFeet = Math.ceil(runsSumInches / 12);
   let linearFeet = rawFeet % 2 === 0 ? rawFeet : rawFeet + 1;
-  linearFeetOutput.textContent = linearFeet.toString();
+  linearFeetOutput.textContent = linearFeet.toLocaleString();
 
   let priceData = boardData[boardWidthSelect.value];
-  priceStandardOutput.textContent = (linearFeet * priceData.priceStandard).toFixed(2);
-  priceCabinOutput.textContent = (linearFeet * priceData.priceCabin).toFixed(2);
+  const gableStandardVal = linearFeet * priceData.priceStandard;
+  const gableCabinVal = linearFeet * priceData.priceCabin;
+  priceStandardOutput.textContent = gableStandardVal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  priceCabinOutput.textContent = gableCabinVal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
 }
 
 // Event listeners
-['wallHeightFeet','wallHeightInches','wallLength','wallBoard'].forEach(id =>
-  document.getElementById(id).addEventListener('input', calculateWall));
+['wallHeightFeet','wallHeightInches','wallLength','wallBoard'].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input', calculateWall);
+});
 
 // Gable event listeners
 [heightFtInput, heightInInput, baseFtInput, boardWidthSelect].forEach(el => {
