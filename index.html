@@ -381,11 +381,19 @@ function calculateGable() {
 
   const MAX_HEIGHT_FT = 100000;
   const MAX_BASE_FT = 200000;
+  const MAX_HEIGHT_IN = MAX_HEIGHT_FT * 12;
 
-  if (heightFt > MAX_HEIGHT_FT) {
-    heightFt = MAX_HEIGHT_FT;
-    heightFtInput.value = String(MAX_HEIGHT_FT);
+  // Cap combined feet+inches to MAX_HEIGHT_FT (enforce total inches limit)
+  let totalHeightIn = heightFt * 12 + heightIn;
+  if (totalHeightIn > MAX_HEIGHT_IN) {
+    totalHeightIn = MAX_HEIGHT_IN;
   }
+  // reflect capped value back into the two inputs (feet and inches)
+  heightFt = Math.floor(totalHeightIn / 12);
+  heightIn = totalHeightIn % 12;
+  heightFtInput.value = String(heightFt);
+  heightInInput.value = String(heightIn);
+
   if (baseFt > MAX_BASE_FT) {
     baseFt = MAX_BASE_FT;
     baseFtInput.value = String(MAX_BASE_FT);
