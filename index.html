@@ -138,9 +138,45 @@ input[type=number]::-webkit-outer-spin-button {
   max-width: 56px;
 }
 
+/* Compact widths for gable height inputs (feet/inches) */
+#heightFt {
+  flex: 0 0 72px;
+  max-width: 72px;
+}
+#heightIn {
+  flex: 0 0 56px;
+  max-width: 56px;
+}
+
+/* Make the wall length input more compact so the row doesn't stretch too wide */
+#wallLength {
+  flex: 0 0 110px; /* fixed narrow width */
+  max-width: 110px;
+}
+
+/* Make the wall board select the same compact width and aligned with the length input */
+#wallBoard {
+  flex: 0 0 110px;
+  max-width: 110px;
+}
+
+/* Make the gable base/select compact and aligned with base input */
+#baseFt {
+  flex: 0 0 110px;
+  max-width: 110px;
+}
+#boardWidth {
+  flex: 0 0 110px;
+  max-width: 110px;
+}
+
 @media (max-width: 600px) {
   #wallHeightFeet { flex: 0 0 60px; max-width: 60px; }
   #wallHeightInches { flex: 0 0 48px; max-width: 48px; }
+  #wallLength { flex: 0 0 90px; max-width: 90px; }
+  #wallBoard { flex: 0 0 90px; max-width: 90px; }
+  #baseFt { flex: 0 0 90px; max-width: 90px; }
+  #boardWidth { flex: 0 0 90px; max-width: 90px; }
 }
 .clear-btn {
     position: absolute;
@@ -159,8 +195,59 @@ input[type=number]::-webkit-outer-spin-button {
     justify-content: center;
     z-index: 1;
 }
+.input-wrapper > #wallLength {
+  /* reduce input right padding so the smaller clear button sits nicely */
+  padding-right: 22px;
+}
+
+/* Target clear button that belongs to the wall length input and make it smaller */
+.input-wrapper > #wallLength + .clear-btn,
+.input-wrapper > #wallLength ~ .clear-btn {
+  right: 4px;
+  width: 16px;
+  height: 16px;
+  font-size: 11px;
+}
 .clear-btn:hover {
     background: #999;
+}
+/* Wall mode: place clear buttons to the right of inputs with a 10px gap
+   Keep original absolute behavior for other calculators (e.g., gable). */
+#wall .input-wrapper {
+  /* allow normal document flow for wrapper inside wall so button sits after input */
+  position: static;
+  display: inline-flex; /* keep alignment */
+  align-items: center;
+}
+#wall .input-wrapper input {
+  /* reduce reserved padding (no need for absolute button inside wall) */
+  padding-right: 6px;
+}
+#wall .input-wrapper .clear-btn {
+  position: static; /* flow to the right of the input */
+  margin-left: 10px; /* gap between input and button */
+  right: auto;
+  width: 18px; /* keep compact size */
+  height: 18px;
+  font-size: 12px;
+}
+
+/* Gable mode: apply same clear-button/right-flow layout as wall */
+#gable .input-wrapper {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+}
+#gable .input-wrapper input {
+  padding-right: 6px;
+}
+#gable .input-wrapper .clear-btn {
+  position: static;
+  margin-left: 10px;
+  right: auto;
+  width: 18px;
+  height: 18px;
+  font-size: 12px;
 }
 canvas {
     border: 1px solid #ccc;
@@ -217,17 +304,18 @@ canvas {
 <!-- Wall Calculator -->
 <div class="calculator active" id="wall">
   <div class="input-row">
-    <label for="wallHeightFeet">Height:</label>
-    <span class="unit-label">ft</span>
+    <label for="wallHeightFeet">Height (ft):</label>
     <span class="input-wrapper">
       <input type="number" id="wallHeightFeet" value="0" min="0">
       <button type="button" class="clear-btn" data-target="wallHeightFeet">×</button>
     </span>
+  </div>
+  <div class="input-row">
+    <label for="wallHeightInches">Height (in):</label>
     <span class="input-wrapper">
       <input type="number" id="wallHeightInches" value="0" min="0" max="11">
       <button type="button" class="clear-btn" data-target="wallHeightInches">×</button>
     </span>
-    <span class="unit-label">in</span>
   </div>
   <div class="input-row">
     <label for="wallLength">Length (ft):</label>
@@ -255,14 +343,17 @@ canvas {
     <label for="heightFt">Height:</label>
     <span class="unit-label">ft</span>
     <span class="input-wrapper">
-  <input type="number" id="heightFt" min="0" max="100000" step="1" value="0">
+      <input type="number" id="heightFt" min="0" max="100000" step="1" value="0">
       <button type="button" class="clear-btn" data-target="heightFt">×</button>
     </span>
+  </div>
+  <div class="input-row">
+    <label for="heightIn">Height:</label>
+    <span class="unit-label">in</span>
     <span class="input-wrapper">
       <input type="number" id="heightIn" min="0" max="11" step="1" value="0">
       <button type="button" class="clear-btn" data-target="heightIn">×</button>
     </span>
-    <span class="unit-label">in</span>
   </div>
   
   <div class="input-row">
